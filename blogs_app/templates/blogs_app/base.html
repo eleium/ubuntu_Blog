@@ -2,5 +2,13 @@
 <p>欢迎来到我的博客</p>
 
 <p><a href="{% url 'blogs_app:index' %}">回到主页去</a></p>
+<a href="{% url 'blogs_app:blogs' %}">博客列表</a> - 
+
+{% if user.is_authenticated %}
+Hello, {{ user.username }}.
+{% else %}
+<a href="{% url 'accounts:login' %}">请登录</a>
+{% endif %}
+
 
 {% block content %}{% endblock content %}

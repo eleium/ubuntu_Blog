@@ -1,15 +1,11 @@
-from blogs_app.admin import admin
-from django.urls import path, views
-from django.shortcuts import render, redirect
-from blogs_app.models import Blog, Post
-from django.urls import include
-from blogs_app.form import BlogForm, PostForm
-from django.db import models
-
 from django import forms
+from django.db import models
+from django.shortcuts import redirect, render
+from django.urls import include, path, views
 
-
-
+from blogs_app.admin import admin
+from blogs_app.form import BlogForm, PostForm
+from blogs_app.models import Blog, Post
 
 """
 练习 博客 新建一个Django项目，命名为Blog.
@@ -96,6 +92,7 @@ makemigrations + migrate
 # 定义模型，后面的所有动作都是围绕这些模型运动的。
 # 博客网站的两大要素就是博客名blog和博客内容post,因此定义这两个模型就好。
 
+
 # 在models.py 中：
 class Blog(models.Model):
     text = models.CharField(max_length=200)
@@ -131,18 +128,21 @@ class Post(models.Model):
 admin.site.register(Blog)
 admin.site.register(Post)
 
-#新建form.py，在其中创建表单类：
-#这里的两个表单类，都需要写Meta来配。
+# 新建form.py，在其中创建表单类：
+# 这里的两个表单类，都需要写Meta来配。
+
 
 class BlogForm(forms.ModelForm):
     class Meta:
         model = Blog
-        fields = ['text']
+        fields = ["text"]
+
 
 class PostForm(forms.ModelForm):
     class Meta:
         model = Post
-        fields = ['text']
+        fields = ["text"]
+
 
 # 添加url到urls.py 中,不要忘了 命名空间 不然不知道是哪个app的。
 name = "blogs_app"
@@ -194,7 +194,7 @@ path("blogs/", views.blogs, name="blogs")
 def blogs(request):
     blogs = Blog.objects.order_by("date_added")
     context = {"blogs": blogs}
-    return render(request, "blogs_app/blogs.html",context)
+    return render(request, "blogs_app/blogs.html", context)
 
 
 # blogs.html:博客列表主页，展示出所有的博客：
@@ -240,8 +240,8 @@ path("new_blog/", views.new_blog, name="new_blog")
 
 # views.py:添加新博客的视图函数.这里就要用到表单了。因为新增加博客主题，是用户在增加。
 def new_blog(request):
-    blog=Blog.objects.get(id=blog_id)
-    
+    blog = Blog.objects.get(id=blog_id)
+
     if request.method != "POST":
         form = BlogForm()
 
@@ -250,7 +250,7 @@ def new_blog(request):
 
         if form.is_valid():
             form.save()
-            return redirect('blogs_app:blogs')
+            return redirect("blogs_app:blogs")
     context = {"form": form}
     return render(request, "blogs_app/new_blog.html", context)
 
@@ -342,7 +342,7 @@ path("blogs/<int:blog_id>/edit_post/<int:post_id>/", views.edit_post, name="edit
 
 
 # 编辑视图函数： edit_post():
-def edit_post(request,blog_id,post_id):
+def edit_post(request, blog_id, post_id):
     post = Post.objects.get(id=post_id)
     blog = post.blog
 
@@ -359,7 +359,7 @@ def edit_post(request,blog_id,post_id):
     return render(request, "blogs_app/edit_post.html", context)
 
 
-#编写edit_post.html
+# 编写edit_post.html
 """
 {% extends 'blogs_app/base.html' %}
 {% block content %}
@@ -373,9 +373,9 @@ def edit_post(request,blog_id,post_id):
 
 """
 
-#把这个页面链接添加到blog页面的每一个post中：
-    # <p><a href="{% url 'blogs_app:edit_post' blog.id post.id %}"> 编辑博文</a></p>
-    # 放到列表中
+# 把这个页面链接添加到blog页面的每一个post中：
+# <p><a href="{% url 'blogs_app:edit_post' blog.id post.id %}"> 编辑博文</a></p>
+# 放到列表中
 """
 {% extends 'blogs_app/base.html' %}
 {%block content%}
@@ -401,4 +401,4 @@ def edit_post(request,blog_id,post_id):
 {% endblock content %}
 """
 
-#至此，完成一个完整的博客网站。
+# 至此，完成一个完整的博客网站。

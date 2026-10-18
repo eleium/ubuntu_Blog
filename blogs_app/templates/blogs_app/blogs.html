@@ -7,18 +7,12 @@
     {% for blog in blogs %}
     <li>
         {{ blog.text }}
-         <a href ="{% url 'blogs_app:blog' blog.id %}">跳到具体的一个博客去</a>
-
-         
+         <a href ="{% url 'blogs_app:blog' blog.id %}">跳到具体的一个博客去</a>       
     </li>
     {% empty %}
     <li>还没有创建博客主题呢</li>
-
     {% endfor %}
 </ul>
-<!--
-<a href="{% url 'blogs_app:index' %}">返回主页</a>     这个链接不需要写，因为继承的base.html中有同样的链接
--->
 <a href ="{% url 'blogs_app:new_blog' %}">去新增一个博客吧</a>
 
 {% endblock content %}

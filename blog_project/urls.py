@@ -16,11 +16,11 @@ Including another URLconf
 """
 
 from django.contrib import admin
-from django.urls import path,include
+from django.urls import include, path
 
 urlpatterns = [
+    # django 建立的后台管理系统的入口
     path("admin/", admin.site.urls),
-    path('',include('blogs_app.urls')),
-
-   
+    path("", include("blogs_app.urls")),
+    path("accounts/", include("accounts.urls")),
 ]
