@@ -9,11 +9,16 @@ urlpatterns = [
     path("blogs/", views.blogs, name="blogs"),
     path("blogs/<int:blog_id>/", views.blog, name="blog"),
     path("new_blog/", views.new_blog, name="new_blog"),
+    path("blogs/<int:blog_id>/edit_blog/", views.edit_blog, name="edit_blog"),
+    path("blogs/<int:blog_id>/del_blog/", views.del_blog, name="del_blog"),
     path("blogs/<int:blog_id>/new_post/", views.new_post, name="new_post"),
     path(
         "blogs/<int:blog_id>/edit_post/<int:post_id>/",
         views.edit_post,
         name="edit_post",
+    ),
+    path(
+        "blogs/<int:blog_id>/del_post/<int:post_id>/", views.del_post, name="del_post"
     ),
 ]
 

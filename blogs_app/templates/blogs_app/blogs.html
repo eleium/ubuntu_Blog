@@ -1,18 +1,19 @@
 {% extends 'blogs_app/base.html' %}
 {% block content %}
-<p>
-    所有的blog主题都在这啦!这个页面就是博客列表。
-</p>
+
+<p>所有的blog主题都在这啦!欢迎来到博客列表。</p>
 <ul>
     {% for blog in blogs %}
     <li>
         {{ blog.text }}
-         <a href ="{% url 'blogs_app:blog' blog.id %}">跳到具体的一个博客去</a>       
+            <p><a href ="{% url 'blogs_app:blog' blog_id=blog.id %}">请进入博客内容详情</a></p> 
+            <p><a href="{% url 'blogs_app:edit_blog' blog_id=blog.id %}">更改博客名称</a> </p>
+            <p><a href="{% url 'blogs_app:del_blog' blog_id=blog.id %}">删除该博客</a></p>
     </li>
     {% empty %}
-    <li>还没有创建博客主题呢</li>
+    <li>还没有写博文</li>
     {% endfor %}
 </ul>
-<a href ="{% url 'blogs_app:new_blog' %}">去新增一个博客吧</a>
+<a href ="{% url 'blogs_app:new_blog' %}">添加一篇博客</a>
 
 {% endblock content %}

@@ -130,3 +130,5 @@ MAILERS = {
 }
 
 LOGIN_REDIRECT_URL = "blogs_app:index"
+LOGOUT_REDIRECT_URL = "blogs_app:index"
+LOGIN_URL = "accounts:login"

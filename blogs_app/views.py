@@ -1,15 +1,17 @@
-from django.shortcuts import render,redirect
+from django.contrib.auth.decorators import login_required
+from django.shortcuts import get_object_or_404, redirect, render
+
+from .forms import BlogForm, PostForm
 from .models import Blog, Post
-from .form import BlogForm, PostForm
 
 
 # Create your views here.
 def index(request):
-
     # context={'text':text}
     return render(request, "blogs_app/index.html")
 
 
+@login_required
 def blogs(request):
     blogs = Blog.objects.order_by("date_added")
     context = {"blogs": blogs}
@@ -18,7 +20,6 @@ def blogs(request):
 
 def blog(request, blog_id):
     blog = Blog.objects.get(id=blog_id)
-
     posts = blog.post_set.order_by("-date_added")
     context = {"blog": blog, "posts": posts}
     return render(request, "blogs_app/blog.html", context)
@@ -28,32 +29,57 @@ def new_blog(request):
     if request.method != "POST":
         form = BlogForm()
     else:
-        form=BlogForm(data=request.POST)
-        #创建一个BlogForm()表单类的实例。
+        form = BlogForm(data=request.POST)
+        # 创建一个BlogForm()表单类的实例。
         # data 是 BlogForm（继承自 ModelForm → BaseForm）构造函数的一个参数，用来接收用户提交的数据。
-        #request.POST: 用户提交的数据，以POST的方式。
+        # request.POST: 用户提交的数据，以POST的方式。
         # 用户填了表单，点提交 → 浏览器把数据打包成 POST 请求 → Django 把它放进 request.POST。
-        
+
         if form.is_valid():
             form.save()
-            return redirect('blogs_app:blogs' )
+            return redirect("blogs_app:blogs")
+    context = {"form": form}
+    # form 是一个表单实例，它里面包含一个 text 字段，这个字段对应 Blog 模型里的 text 字段。
+    # 用户在这个 text 字段里填的内容（比如“洛阳”），验证通过后会被保存到 Blog 对象的 text 属性里。
+    # form 不是字段本身，而是“字段的容器”。
 
-    context={'form':form}
-#form 是一个表单实例，它里面包含一个 text 字段，这个字段对应 Blog 模型里的 text 字段。
-# 用户在这个 text 字段里填的内容（比如“洛阳”），验证通过后会被保存到 Blog 对象的 text 属性里。
-# form 不是字段本身，而是“字段的容器”。
+    # BlogForm 里的 fields = ['text']，决定了表单里有一个 text 字段。
+    # 这个 text 字段，对应 Blog 模型里的 text 字段。
+    # 用户填的“洛阳”，就是这个字段的值。
+    # form 是“包含这个字段的表单实例”，不是字段本身。
+    return render(request, "blogs_app/new_blog.html", context)
 
-# BlogForm 里的 fields = ['text']，决定了表单里有一个 text 字段。
-# 这个 text 字段，对应 Blog 模型里的 text 字段。
-# 用户填的“洛阳”，就是这个字段的值。
-# form 是“包含这个字段的表单实例”，不是字段本身。
-    return render(request,'blogs_app/new_blog.html',context)
+
+def edit_blog(request, blog_id):
+    # 更安全的写法：用户输入不存在的id，不会崩溃
+    blog = get_object_or_404(Blog, id=blog_id)
+
+    if request.method != "POST":
+        form = BlogForm(instance=blog)
+    else:
+        form = BlogForm(instance=blog, data=request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect("blogs_app:blog", blog_id=blog.id)
+    context = {"form": form, "blog": blog}
+    return render(request, "blogs_app/edit_blog.html", context)
+
+
+def del_blog(request, blog_id):
+    # 更安全的写法：用户输入不存在的id，不会崩溃
+    blog = get_object_or_404(Blog, id=blog_id)
+
+    if request.method == "POST":
+        blog.delete()
+        return redirect("blogs_app:blogs")
+    context = {"blog": blog}
+    return render(request, "blogs_app/del_blog.html", context)
 
 
 def new_post(request, blog_id):
     # 1. 根据 URL 传来的 blog_id，查出要加博文的博客
     blog = Blog.objects.get(id=blog_id)
-    if request.method != 'POST':
+    if request.method != "POST":
         # 2. GET 请求：创建一个空表单，给用户填
         form = PostForm()
     else:
@@ -67,24 +93,24 @@ def new_post(request, blog_id):
             # 6. 现在才保存到数据库
             new_post.save()
             # 7. 跳回当前博客的详情页,目的：防止用户按 F5 重复提交表单。
-            return redirect('blogs_app:blog', blog_id=blog.id)
-        
-        
-    context={'form':form,'blog':blog}
-# context所需要传递给new_post.html的内容，一定来自本视图函数：
-# blog = Blog.objects.get(id=blog_id) 和 form = PostForm(data=request.POST)
+            return redirect("blogs_app:blog", blog_id=blog.id)
 
-# {{ blog }} 到底显示什么，取决于 Blog 模型的 __str__() 方法。
-# 📌 为什么只显示 text，不显示 date_added？
-# 因为 {{ blog }} 调用的是 Blog.__str__()，而你（或教程）只让 __str__() 返回 text。
-# 所以 {{ blog }} 就只显示 text，不显示 date_added。
+    context = {"form": form, "blog": blog}
+    # context所需要传递给new_post.html的内容，一定来自本视图函数：
+    # blog = Blog.objects.get(id=blog_id) 和 form = PostForm(data=request.POST)
 
-# 📌 如果想显示 date_added，怎么办？
-# 方法 1：直接取属性
-# {{ blog.text }}
-# {{ blog.date_added }}
-    return render(request,'blogs_app/new_post.html',context)
-        
+    # {{ blog }} 到底显示什么，取决于 Blog 模型的 __str__() 方法。
+    # 📌 为什么只显示 text，不显示 date_added？
+    # 因为 {{ blog }} 调用的是 Blog.__str__()，而你（或教程）只让 __str__() 返回 text。
+    # 所以 {{ blog }} 就只显示 text，不显示 date_added。
+
+    # 📌 如果想显示 date_added，怎么办？
+    # 方法 1：直接取属性
+    # {{ blog.text }}
+    # {{ blog.date_added }}
+    return render(request, "blogs_app/new_post.html", context)
+
+
 # PostForm 实例有 is_valid()、save() 等方法
 # 它的字段是 text，对应 Post 模型的 text 字段,是TextField,是长文本，没有字数强制的限制。
 # labels 和 model 不在实例上，它们在 Meta 里，是“配置”（BlogForm/PostForm 都有必须的Meta.)
@@ -183,7 +209,7 @@ def edit_post(request, blog_id, post_id):
     blog = post.blog
     # 取出这篇博文所属的博客（通过外键 post.blog）
 
-    if request.method != 'POST':
+    if request.method != "POST":
         # GET 请求：显示带原有数据的表单
         form = PostForm(instance=post)
     else:
@@ -193,9 +219,19 @@ def edit_post(request, blog_id, post_id):
             # 验证通过，保存更新
             form.save()
             # 跳回该博客的详情页
-            return redirect('blogs_app:blog', blog_id=blog.id)
+            return redirect("blogs_app:blog", blog_id=blog.id)
 
     # 把表单、博文、博客都传给模板
-    context = {'form': form, 'post': post, 'blog': blog}
+    context = {"form": form, "post": post, "blog": blog}
     # 渲染 edit_post.html
-    return render(request, 'blogs_app/edit_post.html', context)
+    return render(request, "blogs_app/edit_post.html", context)
+
+
+def del_post(request, blog_id, post_id):
+    blog = get_object_or_404(Blog, id=blog_id)
+    post = get_object_or_404(Post, blog=blog, id=post_id)
+    if request.method == "POST":
+        post.delete()
+        return redirect("blogs_app:blog", blog_id=blog.id)
+    context = {"blog": blog, "post": post}
+    return render(request, "blogs_app/del_post.html", context)

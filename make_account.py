@@ -15,7 +15,39 @@
 6,因为是django提供的views.login,所以要手动指出，登陆后跳转到的哪里：
 settings.py:  LOGIN_REDIRECT_URL='blogs_app:index'
 
+7,补充views.py-->del_blog,edit_blog,del_post,所有的视图函数齐全了。
 
+8,编写上述视图函数对应的html模板。
+
+9，添加一个注册页面。
+9-1，accounts/urls.py path('register/',views.register,name='register')
+9-2,views.py:
+def register(request):
+    if request.method != 'POST':
+        form=UserCreationForm()
+    else:
+        form=UserCreationForm(data=request.POST)
+        if form.is_valid():
+            new_user=form.save()
+            login(request,new_user)
+            return redirect('blogs_app:index')
+    context={'form':form}
+    return render(request,'registration/register.html',context)
+
+9-3,register.html:
+{% extends 'blogs_app/base.html' %}
+{% block content %}
+
+<p>欢迎注册</p>
+<form action="{% url 'accounts:register' %}" method='post'>
+{% csrf_token %}
+{{ form.as_div }}
+<button type='submit'>注册</button>
+</form>
+{% endblock content %}
+
+9-4,在blogs_app/base.html中添加关于注册的链接：
+<a href="{% url 'accounts:register' %}">请注册</a>
 
 
 """

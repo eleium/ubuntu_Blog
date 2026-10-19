@@ -1,9 +1,9 @@
 {% extends 'blogs_app/base.html' %}
 {%block content%}
 
+<p><a href="{% url 'blogs_app:blogs' %}">回到博客列表</a></p>
 <p> 已经写好的博客，博客详情之一：{{ blog.text }}</p>
-
-<p>博文：</p>
+<p>博文内容：</p>
 
 <ul>
     {% for post in posts %}
@@ -11,6 +11,7 @@
         <p>{{ post.date_added|date:'M d,Y H:i'}}</p>
         <p>{{ post.text|linebreaks }}</p>
         <p><a href="{% url 'blogs_app:edit_post' blog_id=blog.id post_id=post.id %}">编辑博文</a></p>
+        <p><a href="{% url 'blogs_app:del_post' blog_id=blog.id post_id=post.id %}">删除博文</a></p>
 
     </li>
     {% empty %}

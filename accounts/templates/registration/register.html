@@ -1,0 +1,12 @@
+{% extends 'blogs_app/base.html' %}
+{% block content %}
+
+<p>欢迎注册</p>
+<form action="{% url 'accounts:register' %}" method='post'>
+    <!--注意app的所属，这里是accounts,而不是另一个blogs_app-->
+{% csrf_token %}
+{{ form.as_div }}
+ <button type='submit'>注册</button>
+</form>
+
+{% endblock content %}

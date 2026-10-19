@@ -8,9 +8,9 @@
     {% csrf_token %}
     {{ form.as_div }}
     <button name='submit'>Add a new post</button>
-<a href="{% url 'blogs_app:blogs' %}"> 回到博客列表页面</a>
+    </form>
+<p><a href="{% url 'blogs_app:blog' blog_id=blog.id %}"> 回到博客详情</a></p>
 
-</form>
 {% endblock content %}
 
 <!--<p><a href="{% url 'blogs_app:blog' blog.id %}">返回{{ blog }}</a></p>

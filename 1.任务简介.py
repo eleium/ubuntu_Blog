@@ -4,7 +4,7 @@ from django.shortcuts import redirect, render
 from django.urls import include, path, views
 
 from blogs_app.admin import admin
-from blogs_app.form import BlogForm, PostForm
+from blogs_app.forms import BlogForm, PostForm
 from blogs_app.models import Blog, Post
 
 """

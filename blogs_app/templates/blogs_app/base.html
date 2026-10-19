@@ -1,14 +1,18 @@
 
 <p>欢迎来到我的博客</p>
-
-<p><a href="{% url 'blogs_app:index' %}">回到主页去</a></p>
-<a href="{% url 'blogs_app:blogs' %}">博客列表</a> - 
+<a href="{% url 'accounts:register' %}">请注册</a>
+<!--注意app的所属，这里是accounts-->
 
 {% if user.is_authenticated %}
 Hello, {{ user.username }}.
+<form action="{% url 'accounts:logout' %}" method='post'>
+    {% csrf_token %}
+    <button type='submit'>点此登出</button>
+</form>
 {% else %}
 <a href="{% url 'accounts:login' %}">请登录</a>
 {% endif %}
+<p><a href="{% url 'blogs_app:index' %}">回到主页去</a></p>
 
 
 {% block content %}{% endblock content %}
