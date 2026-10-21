@@ -1,8 +1,9 @@
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import get_object_or_404, redirect, render
 
+from django.shortcuts import get_object_or_404, redirect, render
 from .forms import BlogForm, PostForm
 from .models import Blog, Post
+from django.http import Http404
 
 
 # Create your views here.
@@ -13,18 +14,26 @@ def index(request):
 
 @login_required
 def blogs(request):
-    blogs = Blog.objects.order_by("date_added")
+    # blogs = Blog.objects.order_by("date_added")
+    # 从笼统的objects转到objects.filter,过滤一下，只有拥有者是请求的用户的blog。
+    blogs = Blog.objects.filter(owner=request.user).order_by("date_added")
     context = {"blogs": blogs}
     return render(request, "blogs_app/blogs.html", context)
 
 
+@login_required
 def blog(request, blog_id):
     blog = Blog.objects.get(id=blog_id)
+    # 添加如果不是登录的用户，返回404错误
+    if blog.owner != request.user:
+        raise Http404
+
     posts = blog.post_set.order_by("-date_added")
     context = {"blog": blog, "posts": posts}
     return render(request, "blogs_app/blog.html", context)
 
 
+@login_required
 def new_blog(request):
     if request.method != "POST":
         form = BlogForm()
@@ -36,7 +45,10 @@ def new_blog(request):
         # 用户填了表单，点提交 → 浏览器把数据打包成 POST 请求 → Django 把它放进 request.POST。
 
         if form.is_valid():
-            form.save()
+            new_blog = form.save(commit=False)
+            new_blog.owner = request.user
+            new_blog.save()
+            # form.save()
             return redirect("blogs_app:blogs")
     context = {"form": form}
     # form 是一个表单实例，它里面包含一个 text 字段，这个字段对应 Blog 模型里的 text 字段。
@@ -50,9 +62,12 @@ def new_blog(request):
     return render(request, "blogs_app/new_blog.html", context)
 
 
+@login_required
 def edit_blog(request, blog_id):
     # 更安全的写法：用户输入不存在的id，不会崩溃
     blog = get_object_or_404(Blog, id=blog_id)
+    if blog.owner != request.user:
+        raise Http404
 
     if request.method != "POST":
         form = BlogForm(instance=blog)
@@ -65,9 +80,12 @@ def edit_blog(request, blog_id):
     return render(request, "blogs_app/edit_blog.html", context)
 
 
+@login_required
 def del_blog(request, blog_id):
     # 更安全的写法：用户输入不存在的id，不会崩溃
     blog = get_object_or_404(Blog, id=blog_id)
+    if blog.owner != request.user:
+        raise Http404
 
     if request.method == "POST":
         blog.delete()
@@ -76,9 +94,13 @@ def del_blog(request, blog_id):
     return render(request, "blogs_app/del_blog.html", context)
 
 
+@login_required
 def new_post(request, blog_id):
     # 1. 根据 URL 传来的 blog_id，查出要加博文的博客
     blog = Blog.objects.get(id=blog_id)
+    if blog.owner != request.user:
+        raise Http404
+
     if request.method != "POST":
         # 2. GET 请求：创建一个空表单，给用户填
         form = PostForm()
@@ -202,12 +224,15 @@ IntegrityError: NOT NULL constraint failed: blogs_app_post.blog_id
 """
 
 
+@login_required
 def edit_post(request, blog_id, post_id):
     # 定义编辑博文函数，接收 URL 传来的 blog_id 和 post_id
     post = Post.objects.get(id=post_id)
     # 根据 post_id 查出要编辑的博文
     blog = post.blog
     # 取出这篇博文所属的博客（通过外键 post.blog）
+    if blog.owner != request.user:
+        raise Http404
 
     if request.method != "POST":
         # GET 请求：显示带原有数据的表单
@@ -227,9 +252,12 @@ def edit_post(request, blog_id, post_id):
     return render(request, "blogs_app/edit_post.html", context)
 
 
+@login_required
 def del_post(request, blog_id, post_id):
     blog = get_object_or_404(Blog, id=blog_id)
     post = get_object_or_404(Post, blog=blog, id=post_id)
+    if blog.owner != request.user:
+        raise Http404
     if request.method == "POST":
         post.delete()
         return redirect("blogs_app:blog", blog_id=blog.id)

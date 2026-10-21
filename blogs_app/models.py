@@ -1,36 +1,42 @@
 from django.db import models
+from django.contrib.auth.models import User
+
 
 # Create your models here.
 class Blog(models.Model):
-    text=models.CharField(max_length=200)
-    date_added=models.DateTimeField(auto_now_add=True)
+    text = models.CharField(max_length=200)
+    date_added = models.DateTimeField(auto_now_add=True)
+    # 增加外键，绑定登录用户拥有的博客，后面的增删改查，都可以了。
+    owner = models.ForeignKey(User, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.text
 
 
 class Post(models.Model):
-    blog=models.ForeignKey(Blog,on_delete=models.CASCADE)
-    text=models.TextField()
-    date_added=models.DateTimeField(auto_now_add=True)  
+    blog = models.ForeignKey(Blog, on_delete=models.CASCADE)
+    text = models.TextField()
+    date_added = models.DateTimeField(auto_now_add=True)
+
     class Meta:
-          verbose_name_plural = "posts"
-          #这个Meta可选的。因为post的复数形式就是posts.
-          #如果有其他的元条件，才需要Meta
-          
-# 📌模型中 什么时候需要 class Meta？
-# 场景	                     是否需要 Meta
-# 设置排序	                ✅ 需要，ordering = ['-date_added']
-# 设置复数名	            ✅ 需要，verbose_name_plural = '...'
-# 设置单数名	            ✅ 需要，verbose_name = '...'
-# 设置数据库表名	        ✅ 需要，db_table = '...'
-# 普通模型，什么都不改	     ❌ 不需要
-# 如果你的模型不需要额外配置，完全可以不写 class Meta。
-    
+        verbose_name_plural = "posts"
+        # 这个Meta可选的。因为post的复数形式就是posts.
+        # 如果有其他的元条件，才需要Meta
+
+    # 📌模型中 什么时候需要 class Meta？
+    # 场景	                     是否需要 Meta
+    # 设置排序	                ✅ 需要，ordering = ['-date_added']
+    # 设置复数名	            ✅ 需要，verbose_name_plural = '...'
+    # 设置单数名	            ✅ 需要，verbose_name = '...'
+    # 设置数据库表名	        ✅ 需要，db_table = '...'
+    # 普通模型，什么都不改	     ❌ 不需要
+    # 如果你的模型不需要额外配置，完全可以不写 class Meta。
+
     def __str__(self):
         return f"{self.text[:50]}..."
-    
-#模型与表单的📌 本质区别
+
+
+# 模型与表单的📌 本质区别
 # 对比	                     模型	                        表单
 # 是否需要Meta            	❌ 可选	                       ✅ 必须
 # Meta 里放什么	            排序、表名、复数名等	        model、fields、labels、widgets

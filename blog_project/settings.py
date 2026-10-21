@@ -34,6 +34,8 @@ INSTALLED_APPS = [
     # 新增应用程序：
     "blogs_app",
     "accounts",
+    # 第三方应用，务必放到 新增应用和已有默认应用之间
+    "django_bootstrap5",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
