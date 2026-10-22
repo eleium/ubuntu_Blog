@@ -1,6 +1,4 @@
-{% extends 'blogs_app/base.html'%}
-{%block content %}
-
-<a href = "{% url 'blogs_app:blogs' %}"> 点击此处，进入博客列表</a>
-
-{% endblock content%}
+{% extends "blogs_app/base.html" %}
+{% block content %}
+    <a href="{% url 'blogs_app:blogs' %}">点击此处，进入博客列表</a>
+{% endblock content %}

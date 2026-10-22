@@ -1,93 +1,61 @@
-<!doctype html>
-<html lang='zh-cn'>
+<!DOCTYPE html>
+<html lang="zh-cn">
     <head>
         <meta charset='utf-8'>
         <meta name='viewport' content='width=device-width,initial-scale=1'>
         <title>我的博客我做主</title>
-
         {% load django_bootstrap5 %}
         {% bootstrap_css %}
-        {% bootstrap_javascript %}
     </head>
-
     <body>
-        <nav class ="navbar navbar-expand-md navbar-light bg-light mb-4 border round=3">       
-            <div class="container-fluid">     
+        <nav class="navbar navbar-expand-md navbar-light bg-light mb-4 border rounded-3">
+            <div class="container-fluid">
                 <a class="navbar-brand" href="{% url 'blogs_app:index' %}">我的博客</a>
-
-                <button class ="navbar-toggler" type='button' data-bs-toggle='collapse'
-                data-bs-target='#navbarCollapse' aria-controls='navbarCollapse'
-                aria-expanded='false' aria-label='Toggle navigation'>
-                <span class='navbar-toggler-icon'></span>
-                   </button>
-
-                <div class ="collapse navbar-collapse" id='navbarCollapse'>
-                    <ul class='navbar-nav me-auto mb-2 mb-md-0'>
-                        <li class='nav-item'>
-                        <a class="nav-link" href="{% url 'blogs_app:blogs' %}">博客列表</a></li>
-                        </ul><!--定义导航栏左链接的代码到此结束-->
-                    </div><!--定义导航栏可折叠部分的代码到此结束-->
-                </div><!--定义导航栏容器的代码到此结束-->
-            </nav><!--定义导航栏的代码到此结束-->
-
-
-        {% block content %}{% endblock content %}
-
-        </body>
-        </html>
-
-
-<!--外层按钮：你上一行写的 <button class="navbar-toggler"> 是那个可以点击的“外壳”（带有边框和圆角）。
-    内层图标：这个 <span class='navbar-toggler-icon'></span> 就是放在外壳里面的图案：三条杠。逻辑上可以没有这三条杠而不影响功能。
-
-    container:容器    fluid: 流动    container-fluid: 流动式容器，全宽容器：它没有最大宽度限制，永远占据屏幕宽度的 100%
-
-    toggler:名词：导航栏的切换按钮。toggle: 动词：切换，开关，隐藏和折叠
-    expand: 展开。把折叠的东西展开
-    collapse: 折叠。expand的反义词。
-
-    data-bs-toggle="collapse": 告诉 JavaScript：“当用户点击这个按钮时，请帮我调用 Collapse 插件，在展开和折叠这两个状态之间来回切换”。
-    data-bs-target="#navbarCollapse":告诉 JavaScript：“去执行折叠动作,把动作施展在一个ID 叫做 navbarCollapse 的元素上。”
-    两者toggle和target要同时出现：切换折叠状态（折叠的打开，打开的折叠）,作用对象是id=#navbarCollapse.
-
-    #navbarCollapse --->   <div class ="collapse navbar-collapse" id='navbarCollapse'> 导航栏的折叠区域。
-    navbarCollapse 就是一个“靶子”的名字，指向了导航栏里那个会被收起/展开的菜单区域。名字可变，只要与后面的id=name 一致就行。
-    -->
-
-    <!--<div class='collapse navbar-collapse' id='navbarCollapse'::我在这里放了一个装导航菜单的‘大盒子’，
-    在手机上它默认是‘折叠隐藏’起来的，为了方便上面的那个按钮能对准它，我给它贴了个门牌号，叫 navbarCollapse。”-->
-
-    <!--ul class='navbar-nav ---> <li class='navbar-item' --->  <a class='navbar-link'这三个类名是 Bootstrap 导航栏的**“黄金三件套”**，
-        它们规定了导航菜单的**层级结构和排版**。
-        打个比方：这就像去超市买货架，`<ul>` 是**大货架**，`<li>` 是货架上的**小托盘**，`<a>` 是托盘里供人拿取的**商品**。
-
-1. `navbar-nav`（用在 `<ul>` 上）
-*   **拆词**：`navbar`（导航栏） + `nav`（导航）。
-*   **口语化翻译**：**“导航栏专属的导航列表”**。
-*   **作用**：加上这个类，Bootstrap 就会把原本带黑点、竖着排的无序列表（`<ul>`），
-      变成一个没有黑点、适合在导航栏里横排或美观排列的菜单容器。
-
-### 2. `nav-item`（用在 `<li>` 上）
-*   **拆词**：`nav`（导航） + `item`（项目/条目）。
-*   **口语化翻译**：**“导航条目” / “菜单项”**。
-*   **作用**：告诉 Bootstrap：“这是一个独立的菜单项（一个小格子）”。它负责调整每个菜单项之间的间距、对齐方式。
-
-### 3. `nav-link`（用在 `<a>` 上）
-*   **拆词**：`nav`（导航） + `link`（链接）。
-*   **口语化翻译**：**“导航链接”**。
-*   **作用**：真正让鼠标能点、能跳转的元素。
-    加上这个类，链接会去掉默认的下划线，文字颜色和鼠标悬停（hover）时的变色效果都会变成标准的导航栏样式。
-
-**⚠️ 重要规矩**：这三个类通常是**绑定在一起的（必须按 `ul -> li -> a` 的嵌套顺序使用）**。
-如果你把 `nav-link` 加在 `<li>` 上，或者把 `nav-item` 加在 `<a>` 上，样式就会错乱。
-
-🎁 顺便翻译一下后面的辅助类
-代码里的 `me-auto mb-2 mb-md-0` 是 Bootstrap 的**边距（Spacing）工具类**：
-
-*   **`me-auto`**：`margin-end: auto`。作用是**“把右边距撑满，把后面的内容往最右边推”**。
-在这个场景下，它通常用来把导航菜单靠左放，把“登录/注册”按钮挤到屏幕最右边。
-*   **`mb-2`**：`margin-bottom: 2`。下边距留一点空隙。
-*   **`mb-md-0`**：在中等（md）以上的大屏幕，下边距变为 0。
-
-**总结**：这行代码的意思就是：**“我要在这里放一个导航菜单大货架（navbar-nav），
-货架里放一个‘博客列表’的小托盘（nav-item），托盘上放一个可以点的链接（nav-link），并且要把这个大货架往左边顶（me-auto）。-->
+                <button class="navbar-toggler"
+                        type='button'
+                        data-bs-toggle='collapse'
+                        data-bs-target='#navbarCollapse'
+                        aria-controls='navbarCollapse'
+                        aria-expanded='false'
+                        aria-label='Toggle navigation'>
+                    <span class="navbar-toggler-icon"></span>
+                </button>
+                <div class="collapse navbar-collapse" id="navbarCollapse">
+                    <ul class="navbar-nav me-auto mb-2 mb-md-0">
+                        <li class="nav-item">
+                            <a class="nav-link" href="{% url 'blogs_app:blogs' %}">博客列表</a></li>
+                    </ul>
+                    <!--定义导航栏左链接的代码到此结束-->
+                    <!--与账户相关的链接：-->
+                    <ul class="navbar-nav ms-auto mb-2 mb-md-0">
+                        {% if user.is_authenticated %}
+                            <li class="nav-item">
+                                <span class="navbar-text me-2">Hello ,{{ user.username }}.</span>
+                            </li>
+                        {% else %}
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'accounts:register' %}">去注册</a></li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'accounts:login' %}">去登录</a></li>
+                        {% endif %}
+                    </ul>
+                    <!--与账户相关的链接到此结束-->
+                    {% if user.is_authenticated %}
+                        <form action="{% url 'accounts:logout' %}" method='post'>
+                            {% csrf_token %}
+                            <button type='submit' class="btn btn-outline-secondary btn-sm">logout</button>
+                        </form>
+                    {% endif %}
+                </div>
+                <!--定义导航栏可折叠部分的代码到此结束-->
+            </div>
+            <!--定义导航栏容器的代码到此结束-->
+        </nav>
+        <!--定义导航栏的代码到此结束-->
+        <div class="container">
+            {% block content %}
+            {% endblock content %}
+        </div>
+        {% bootstrap_javascript %}
+    </body>
+</html>
