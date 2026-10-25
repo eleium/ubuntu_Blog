@@ -1,0 +1,14 @@
+{% extends 'blogs_app/base.html' %}
+{% block content %}
+
+
+<p> 有错别字，重新编辑</p>
+<p><a href="{% url 'blogs_app:blog' blog_id=blog.id %}">回到 {{ blog }} </a></p>
+
+<form action="{% url 'blogs_app:edit_post' blog_id=blog.id post_id=post.id %}" method='post'>
+    {% csrf_token %}
+    {{ form.as_div}}
+    <button name='submit'> 编辑完成，点击提交</button>
+</form>
+
+{% endblock content %}

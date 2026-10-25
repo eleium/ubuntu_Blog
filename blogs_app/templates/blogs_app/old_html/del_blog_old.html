@@ -1,0 +1,12 @@
+{% extends 'blogs_app/base.html' %}
+{% block content %}
+
+<p>你将删除掉一片辛苦写下的博客--{{blog.text}}</p>
+
+<form action="{% url 'blogs_app:del_blog' blog_id=blog.id %}" method='post'>
+    {% csrf_token %}
+    <button type='submit'>确认删除</button>
+    <a href="{% url 'blogs_app:blog' blog_id=blog.id %}">取消删除</a>
+</form>
+
+{% endblock content %}

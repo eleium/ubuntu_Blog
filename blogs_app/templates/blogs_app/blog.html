@@ -20,5 +20,6 @@
         <!--包含时间戳和编辑链接的标题-->
         <!--包含博文的正文-->
     {% endfor %}
-    <p><a href="{% url 'blogs_app:new_post' blog_id=blog.id %}">增加新博文</a></p>
+    <a class="btn btn-secondary"
+       href="{% url 'blogs_app:new_post' blog_id=blog.id %}">增加新博文</a>
 {% endblock content %}

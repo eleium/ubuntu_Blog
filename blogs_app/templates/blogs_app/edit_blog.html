@@ -1,11 +1,15 @@
-{% extends 'blogs_app/base.html' %}
+{% extends "blogs_app/base.html" %}
+{% block page_header %}
+    <h5>请更改博客的名称</h5>
+{% endblock page_header %}
 {% block content %}
-
-<p>欢迎来到编辑博客页面，可以更改博客的名字</p>
-
-<form action="{% url 'blogs_app:edit_blog' blog_id=blog.id %}" method='post'>
-    {% csrf_token %}
-    {{ form.as_div }}
-    <button type='submit'>提交更改</button>
-</form>
+    <p>欢迎来到编辑博客页面，可以更改博客的名字</p>
+    <div class="card p-3 bg-light mb-4">
+        <form action="{% url 'blogs_app:edit_blog' blog_id=blog.id %}"
+              method='post'>
+            {% csrf_token %}
+            {{ form.as_div }}
+            <button class="btn btn-primary mt-2 mb-2" type='submit'>提交更改</button>
+        </form>
+    </div>
 {% endblock content %}

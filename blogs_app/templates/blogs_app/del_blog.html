@@ -1,12 +1,15 @@
-{% extends 'blogs_app/base.html' %}
+{% extends "blogs_app/base.html" %}
+{% block page_header %}
+    <h4>想好了，真要删除吗？</h4>
+{% endblock page_header %}
 {% block content %}
-
-<p>你将删除掉一片辛苦写下的博客--{{blog.text}}</p>
-
-<form action="{% url 'blogs_app:del_blog' blog_id=blog.id %}" method='post'>
-    {% csrf_token %}
-    <button type='submit'>确认删除</button>
-    <a href="{% url 'blogs_app:blog' blog_id=blog.id %}">取消删除</a>
-</form>
-
+    <p>你将删除掉一片辛苦写下的博客--{{ blog.text }}</p>
+    <div class="card border rounded-2 mb-3 bg-light">
+        <form action="{% url 'blogs_app:del_blog' blog_id=blog.id %}" method='post'>
+            {% csrf_token %}
+            <button class="btn btn-danger" type='submit'>确认删除</button>
+            <a class="btn btn-secondary"
+               href="{% url 'blogs_app:blog' blog_id=blog.id %}">取消删除</a>
+        </form>
+    </div>
 {% endblock content %}

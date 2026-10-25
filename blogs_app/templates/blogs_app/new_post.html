@@ -1,53 +1,20 @@
- {% extends "blogs_app/base.html" %}
- {% block content %}
-
- <p>在这博客详情页面，可以写一篇新的博文 :</p>
-<!--增加提示语：-->
-
-<form action="{% url 'blogs_app:new_post' blog.id %}" method='post'>
-    {% csrf_token %}
-    {{ form.as_div }}
-    <button name='submit'>Add a new post</button>
-    </form>
-<p><a href="{% url 'blogs_app:blog' blog_id=blog.id %}"> 回到博客详情</a></p>
-
+{% extends "blogs_app/base.html" %}
+{% load django_bootstrap5 %}
+{% block page_header %}
+    <h5>欢迎来到新增博文页面</h5>
+{% endblock page_header %}
+{% block content %}
+    <p>在这博客详情页面，可以写一篇新的博文 :</p>
+    <!--增加提示语：-->
+    <div class="card bg-light p-3 mb-2 rounded-2 border">
+        <form action="{% url 'blogs_app:new_post' blog_id=blog.id %}" method='post'>
+            {% csrf_token %}
+            {% bootstrap_form form %}
+            <div class="d-flex gap-4">
+                <button class="btn btn-outline-secondary" name='submit' type="submit">Add a new post</button>
+                <a class="btn btn-outline-secondary"
+                   href="{% url 'blogs_app:blog' blog_id=blog.id %}">回到博客详情</a>
+            </div>
+        </form>
+    </div>
 {% endblock content %}
-
-<!--<p><a href="{% url 'blogs_app:blog' blog.id %}">返回{{ blog }}</a></p>
-这个链接的作用，就是返回 洛阳、许昌、大连等具体的某一个blog页面，
-这样就可以给这个blog主题，不停的添加new_post博文了。
-但是，这个功能跟new_post()视图函数中的return redirect(url 'blogs_app blog',blog_id=blog.id)重复了。可以删除.
--->
-
-
-<!--
-用户访问 blog.html（某个博客的详情页）
-    ↓
-点击 <a href="{% url 'blogs_app:new_post' blog.id %}">+ 发布新博文</a>
-    ↓
-浏览器跳转到 /blogs/1/new_post/
-    ↓
-Django 调用 views.new_post，GET 请求
-    ↓
-form = PostForm()  创建空表单
-    ↓
-渲染 new_post.html，显示表单
-    ↓
-用户填写博文内容
-    ↓
-用户点击提交按钮
-    ↓
-<form action="{% url 'blogs_app:new_post' blog.id %}" method="post">
-    ↓
-浏览器把数据 POST 到 /blogs/1/new_post/
-    ↓
-Django 再次调用 views.new_post，POST 请求
-    ↓
-form = PostForm(data=request.POST)
-    ↓
-form.is_valid() → form.save(commit=False) → new_post.blog = blog → new_post.save()
-    ↓
-redirect 到 /blogs/1/（博客详情页）
-    ↓
-用户看到刚发布的博文
--->

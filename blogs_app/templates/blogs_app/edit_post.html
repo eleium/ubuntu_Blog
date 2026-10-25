@@ -1,14 +1,17 @@
-{% extends 'blogs_app/base.html' %}
+{% extends "blogs_app/base.html" %}
+{% load django_bootstrap5 %}
+{% block page_header %}
+    <h5>欢迎来到编辑博文页面</h5>
+{% endblock page_header %}
 {% block content %}
-
-
-<p> 有错别字，重新编辑</p>
-<p><a href="{% url 'blogs_app:blog' blog_id=blog.id %}">回到 {{ blog }} </a></p>
-
-<form action="{% url 'blogs_app:edit_post' blog_id=blog.id post_id=post.id %}" method='post'>
-    {% csrf_token %}
-    {{ form.as_div}}
-    <button name='submit'> 编辑完成，点击提交</button>
-</form>
-
+    <p>有错别字，重新编辑</p>
+    <div class="card p-3 bg-light mb-3">
+        <p><a href="{% url 'blogs_app:blog' blog_id=blog.id %}">回到 {{ blog }} </a></p>
+        <form action="{% url 'blogs_app:edit_post' blog_id=blog.id post_id=post.id %}"
+              method='post'>
+            {% csrf_token %}
+            {% bootstrap_form form %}
+            <button class="btn btn-secondary mt-3" name='submit' type='submit'>编辑完成，点击提交</button>
+        </form>
+    </div>
 {% endblock content %}

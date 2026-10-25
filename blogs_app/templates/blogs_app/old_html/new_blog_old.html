@@ -1,0 +1,27 @@
+
+{% extends "blogs_app/base.html" %}
+<!--继承base.html-->
+{%block content %}
+
+<p>玩够了，赶紧增加一个新的博客吧 :</p>
+<!--增加提示语：-->
+
+<form action="{% url 'blogs_app:new_blog' %}" method='post'>
+    {% csrf_token %}
+    {{ form.as_div }}
+    <button name='submit'>Add a new Blog</button>
+</form>
+<a href="{% url 'blogs_app:blogs' %}"> 回到博客列表页面</a>
+{% endblock content %}
+
+<!--form action="{% url 'blogs_app:new_blog' %}" method='post'
+是把表单里的数据，以 POST 方式提交给 new_blog 这个 URL 对应的视图函数去处理
+{{ form.as_div }}	每个字段包在 <div> 里	块级容器，方便 CSS 布局
+ 
+这个表单form=BlogForm(data=request.'POST')包含
+        model=Blog
+        fields=['text']
+        labels={'text':'新的博客'}
+然后new_blog.html交给django,服务器渲染后，
+浏览器呈现的是： 字段是需要用户填写的新的城市，比如'大理‘，在这文字框旁边写着标签：新的博客。-->
+
