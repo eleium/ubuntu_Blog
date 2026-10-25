@@ -1,4 +1,11 @@
 {% extends "blogs_app/base.html" %}
-{% block content %}
-    <a href="{% url 'blogs_app:blogs' %}">点击此处，进入博客列表</a>
-{% endblock content %}
+{% block page_header %}
+    <div class="p-3 mb-4 bg-light border rounded-3">
+        <div class="container-fluid py-4">
+            <h1 class="display-3">我的博客我做主</h1>
+            <p class="lead">生命多姿多彩，可以独享，也可以分享。</p>
+            <a class="btn btn-primary btn-lg mt-1"
+               href="{% url 'accounts:register' %}">Register »</a>
+        </div>
+    </div>
+{% endblock page_header %}

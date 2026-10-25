@@ -1,50 +1,24 @@
-{% extends 'blogs_app/base.html' %}
-{%block content%}
-
-<p><a href="{% url 'blogs_app:blogs' %}">回到博客列表</a></p>
-<p> 已经写好的博客，博客详情之一：{{ blog.text }}</p>
-<p>博文内容：</p>
-
-<ul>
+{% extends "blogs_app/base.html" %}
+{% block page_header %}
+    <h1>{{ blog.text }}</h1>
+{% endblock page_header %}
+{% block content %}
+    <p><a href="{% url 'blogs_app:blogs' %}">回到博客列表</a></p>
+    <p>已经写好的博客，博客详情</p>
+    <p>博文内容：</p>
     {% for post in posts %}
-    <li>
-        <p>{{ post.date_added|date:'M d,Y H:i'}}</p>
-        <p>{{ post.text|linebreaks }}</p>
-        <p><a href="{% url 'blogs_app:edit_post' blog_id=blog.id post_id=post.id %}">编辑博文</a></p>
-        <p><a href="{% url 'blogs_app:del_post' blog_id=blog.id post_id=post.id %}">删除博文</a></p>
-
-    </li>
+        <div class="card mb-3">
+            <h6 class="card-header">
+                {{ post.date_added|date:'M d,Y H:i' }}
+                <small><a href="{% url 'blogs_app:edit_post' blog_id=blog.id post_id=post.id %}">编辑博文</a>
+                    <a href="{% url 'blogs_app:del_post' blog_id=blog.id post_id=post.id %}">删除博文</a></small>
+            </h6>
+            <div class="card-body">{{ post.text|linebreaks }}</div>
+        </div>
     {% empty %}
-    <li>还没有给这个博客添加博文</li>
-
+        <p>还没有给这个博客添加博文</p>
+        <!--包含时间戳和编辑链接的标题-->
+        <!--包含博文的正文-->
     {% endfor %}
-</ul>
-<p><a href="{% url 'blogs_app:new_post' blog_id=blog.id %}">增加新博文</a></p>
+    <p><a href="{% url 'blogs_app:new_post' blog_id=blog.id %}">增加新博文</a></p>
 {% endblock content %}
-
-------------------------------------------------------
-<!--4. 博客详情页 `blog.html`
-**URL**：`http://localhost:8000/blogs/1/`
-- 显示当前博客的标题
-- 显示该博客下所有博文（无序列表）
-- 每篇博文有“编辑”链接
-- 一个“发布新博文”的链接-->
-
-
-<!--管道符： | 是 Django 模板的过滤器（filter），作用是把前面的变量“加工”一下再显示。
-post.date_added：原始的日期时间对象，比如 2026-10-03 14:30:00
-|date:'M d, Y H:i'：用 date 过滤器，把它格式化成 Oct 03, 2026 14:30
-用意：让日期显示得更易读，而不是 Python 默认的 datetime 字符串
-
-post.text：原始文本，可能包含换行符
-|linebreaks：用 linebreaks 过滤器，把换行符转成 HTML 的 <p> 和 <br> 标签
-用意：让多段文字在网页上正常分段显示，而不是挤成一坨
-
-📌 常见的几个过滤器
-过滤器	          作用	                          例子
-date:'格式'	      格式化日期	                 {{ post.date_added|date:'Y-m-d' }} → 2026-10-03
-linebreaks	      把换行转成 <p>、<br>	         多段文本正常分段
-linebreaksbr	  只把换行转成 <br>	             不包 <p>
-length	          取长度	                     {{ post.text|length }}
-upper	          转大写	                     {{ post.text|upper }}
-default:'无'	  值为空时显示默认	             {{ post.text|default:'暂无内容' }}-->

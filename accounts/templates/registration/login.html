@@ -1,16 +1,12 @@
-{% extends 'blogs_app/base.html' %}
+{% extends "blogs_app/base.html" %}
+{% load django_bootstrap5 %}
+{% block page_header %}
+    <h2>Login to your account.</h2>
+{% endblock page_header %}
 {% block content %}
-
-{% if form.errors %}
-<p> 名字或密码不正确，重新输入。</p>
-{% endif %}
-
-<form action="{% url 'accounts:login' %}" method='post'>
-    {% csrf_token %}
-    {{ form.as_div }}
-    <button type='submit'>登录</button>
-</form>
+    <form action="{% url 'accounts:login' %}" method='post'>
+        {% csrf_token %}
+        {% bootstrap_form form %}
+        {% bootstrap_button button_type="submit" content="log in" %}
+    </form>
 {% endblock content %}
-
-
-

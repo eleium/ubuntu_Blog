@@ -1,16 +1,18 @@
 {% extends "blogs_app/base.html" %}
+{% block page_header %}
+    <h1>博客列表</h1>
+{% endblock page_header %}
 {% block content %}
-    <p>所有的blog主题都在这啦!欢迎来到博客列表。</p>
-    <ul>
+    <ul class="list-group border-bottom pb-2 mb-4">
         {% for blog in blogs %}
-            <li>
+            <li class="list-group-item border-0">
                 {{ blog.text }}
                 <p><a href="{% url 'blogs_app:blog' blog_id=blog.id %}">请进入博客内容详情</a></p>
                 <p><a href="{% url 'blogs_app:edit_blog' blog_id=blog.id %}">更改博客名称</a> </p>
                 <p><a href="{% url 'blogs_app:del_blog' blog_id=blog.id %}">删除该博客</a></p>
             </li>
         {% empty %}
-            <li>还没有写博文</li>
+            <li class="list-group-item border-0">还没有写博文</li>
         {% endfor %}
     </ul>
     <a href="{% url 'blogs_app:new_blog' %}">添加一篇博客</a>
