@@ -1,3 +1,5 @@
+import os
+
 """
 Django settings for blog_project project.
 
@@ -145,6 +147,6 @@ LOGOUT_REDIRECT_URL = "blogs_app:index"
 LOGIN_URL = "accounts:login"
 
 # 部署用
-import os
+
 
 STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
