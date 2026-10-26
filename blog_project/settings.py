@@ -23,9 +23,10 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = "django-insecure-(u^*@og9)lb^q9pkea(9#qoew+hzh8=_$pegn*&#9jnt*gskn%"
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+# DEBUG=True   要部署到www.pythonanywhere.com上，所以要把这个关闭。
+DEBUG = False
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS = ["helloelei.pythonanywhere.com"]
 
 
 # Application definition
@@ -134,3 +135,7 @@ MAILERS = {
 LOGIN_REDIRECT_URL = "blogs_app:index"
 LOGOUT_REDIRECT_URL = "blogs_app:index"
 LOGIN_URL = "accounts:login"
+
+import os
+
+STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
