@@ -24,9 +24,17 @@ SECRET_KEY = "django-insecure-(u^*@og9)lb^q9pkea(9#qoew+hzh8=_$pegn*&#9jnt*gskn%
 
 # SECURITY WARNING: don't run with debug turned on in production!
 # DEBUG=True   要部署到www.pythonanywhere.com上，所以要把这个关闭。
-DEBUG = False
 
-ALLOWED_HOSTS = ["helloelei.pythonanywhere.com"]
+# PythonAnywhere 运行时会自动设置这个环境变量；本地没有
+ON_PYTHONANYWHERE = "PYTHONANYWHERE_DOMAIN" in os.environ
+
+# 线上关 DEBUG（安全），本地开 DEBUG（看报错、有静态文件）
+DEBUG = not ON_PYTHONANYWHERE
+
+# 本地和线上都允许；域名只在线上需要
+ALLOWED_HOSTS = ["127.0.0.1", "localhost"]
+if ON_PYTHONANYWHERE:
+    ALLOWED_HOSTS.append("helloelei.pythonanywhere.com")
 
 
 # Application definition
@@ -136,6 +144,7 @@ LOGIN_REDIRECT_URL = "blogs_app:index"
 LOGOUT_REDIRECT_URL = "blogs_app:index"
 LOGIN_URL = "accounts:login"
 
+# 部署用
 import os
 
 STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
